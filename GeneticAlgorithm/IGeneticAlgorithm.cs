@@ -13,13 +13,7 @@
 	/// <param name="model"></param>
 	void TestCandidate(Model model);
 
-	/// <summary>
-	/// Genocide
-	/// </summary>
-	/// <param name="modelA"></param>
-	/// <param name="modelB"></param>
-	/// <returns></returns>
-	int Compare(Model modelA, Model modelB);
+	ComparisonResult Compare(Model modelA, Model modelB);
 
 	/// <summary>
 	/// Returns the best model at the latest generation

@@ -98,7 +98,13 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 
 	private void MakeGenocide()
 	{
-		Array.Sort(_candidates, Compare);
+		Array.Sort(_candidates, _Compare);
+	}
+
+
+	private int _Compare(Model a, Model b)
+	{
+		return (int)Compare(a, b);
 	}
 
 
@@ -130,15 +136,8 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 		throw new Exception("Cannot choose random candidate to mutate: There is an empty array of candidates");
 	}
 
-	/// <summary>
-	/// return negative if A is greater than B
-	/// return positive if B is Greater than A
-	/// return 0 if they are equal
-	/// </summary>
-	/// <param name="a"></param>
-	/// <param name="b"></param>
-	/// <returns></returns>
-	public abstract int Compare(Model a, Model b);
+
+	public abstract ComparisonResult Compare(Model a, Model b);
 	public abstract Model Mutate(Model model);
 	public abstract Model Cross(Model modelA, Model modelB);
 
@@ -151,4 +150,12 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 	public virtual void TestCandidate(Model model) {
 		// Do nothing
 	}
+}
+
+
+public enum ComparisonResult
+{
+	A_IsGreater = -1,
+	B_IsGreater = 1,
+	AreEqual = 0
 }
