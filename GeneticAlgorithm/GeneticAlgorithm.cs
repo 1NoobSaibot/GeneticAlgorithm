@@ -130,7 +130,14 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 		throw new Exception("Cannot choose random candidate to mutate: There is an empty array of candidates");
 	}
 
-
+	/// <summary>
+	/// return negative if A is greater than B
+	/// return positive if B is Greater than A
+	/// return 0 if they are equal
+	/// </summary>
+	/// <param name="a"></param>
+	/// <param name="b"></param>
+	/// <returns></returns>
 	public abstract int Compare(Model a, Model b);
 	public abstract Model Mutate(Model model);
 	public abstract Model Cross(Model modelA, Model modelB);
