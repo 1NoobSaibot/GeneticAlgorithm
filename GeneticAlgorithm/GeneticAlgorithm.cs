@@ -139,7 +139,15 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 
 	public abstract ComparisonResult Compare(Model a, Model b);
 	public abstract Model Mutate(Model model);
-	public abstract Model Cross(Model modelA, Model modelB);
+
+
+	public virtual Model Cross(Model modelA, Model modelB) {
+		if (Rand.Next() % 2 == 0)
+		{
+			return Mutate(modelA);
+		}
+		return Mutate(modelB);
+	}
 
 
 	/// <summary>
