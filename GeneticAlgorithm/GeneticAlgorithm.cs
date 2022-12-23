@@ -44,6 +44,7 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 		ReproduceAndMutate();
 		TestCandidates(_candidates);
 		MakeGenocide();
+		AfterGenocide();
 		GenerationCounter++;
 	}
 
@@ -158,6 +159,14 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 	public virtual void TestCandidate(Model model) {
 		// Do nothing
 	}
+
+
+	/// <summary>
+	/// This hook will be called after new generation is sorted.
+	/// But before GenerationCounter is updated!
+	/// </summary>
+	protected virtual void AfterGenocide()
+	{ }
 }
 
 
