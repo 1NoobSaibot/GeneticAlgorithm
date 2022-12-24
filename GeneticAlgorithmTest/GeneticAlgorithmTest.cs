@@ -29,17 +29,17 @@ namespace GeneticAlgorithmTest
 	{
 		public SimpleGA():base(100, 2) { }
 
-		public override int Compare(SimpleModel a, SimpleModel b)
+		public override ComparisonResult Compare(SimpleModel a, SimpleModel b)
 		{
 			if (a.Error < b.Error)
 			{
-				return -1;
+				return ComparisonResult.A_IsGreater;
 			}
 			if (a.Error > b.Error)
 			{
-				return 1;
+				return ComparisonResult.B_IsGreater;
 			}
-			return 0;
+			return ComparisonResult.AreEqual;
 		}
 
 		public override SimpleModel Cross(SimpleModel modelA, SimpleModel modelB)

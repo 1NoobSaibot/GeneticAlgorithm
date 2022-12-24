@@ -106,13 +106,32 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 
 	private void MakeGenocide()
 	{
-		Array.Sort(_candidates, _Compare);
-	}
+		Model[] choosen = new Model[AmountOfChoosen];
+		foreach (var candidate in _candidates)
+		{
+			Model tryInsert = candidate;
+			for (int i = 0; i < choosen.Length;i++)
+			{
+				if (choosen[i] == null)
+				{
+					choosen[i] = tryInsert;
+					break;
+				}
 
+				var comRes = Compare(tryInsert, choosen[i]);
+				if (comRes == ComparisonResult.A_IsGreater || comRes == ComparisonResult.AreEqual)
+				{
+					Model temp = choosen[i];
+					choosen[i] = tryInsert;
+					tryInsert = temp;
+				}
+			}
+		}
 
-	private int _Compare(Model a, Model b)
-	{
-		return (int)Compare(a, b);
+		for (int i = 0; i < _candidates.Length; i++)
+		{
+			_candidates[i] = i < choosen.Length ? choosen[i] : null;
+		}
 	}
 
 
