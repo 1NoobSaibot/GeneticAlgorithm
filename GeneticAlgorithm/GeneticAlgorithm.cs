@@ -24,6 +24,13 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 	}
 
 
+	public GeneticAlgorithm(int generationLength, int amountOfChoosen, int generationCountInit)
+		: this(generationLength, amountOfChoosen)
+	{
+		GenerationCounter = generationCountInit;
+	}
+
+
 	public void LoadCandidate(Model model)
 	{
 		for (int i = 0; i < _candidates.Length; i++)
