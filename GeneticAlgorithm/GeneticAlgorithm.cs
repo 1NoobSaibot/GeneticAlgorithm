@@ -24,6 +24,13 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 	}
 
 
+	public GeneticAlgorithm(int generationLength, int amountOfChoosen, int generationCountInit)
+		: this(generationLength, amountOfChoosen)
+	{
+		GenerationCounter = generationCountInit;
+	}
+
+
 	public void LoadCandidate(Model model)
 	{
 		for (int i = 0; i < _candidates.Length; i++)
@@ -42,8 +49,9 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 	public void NextGeneration()
 	{
 		ReproduceAndMutate();
-		TestCandidates();
+		TestCandidates(_candidates);
 		MakeGenocide();
+		AfterGenocide();
 		GenerationCounter++;
 	}
 
@@ -83,18 +91,47 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 	}
 
 
-	private void TestCandidates()
+	/// <summary>
+	/// By default tests each candidate separately by calling TestCandidate(Model).
+	/// If you need to test models in different way you can override the method.
+	/// </summary>
+	protected virtual void TestCandidates(Model[] candidates)
 	{
-		for (int i = 0; i < _candidates.Length; i++)
+		for (int i = 0; i < candidates.Length; i++)
 		{
-			TestCandidate(_candidates[i]);
+			TestCandidate(candidates[i]);
 		}
 	}
 
 
 	private void MakeGenocide()
 	{
-		Array.Sort(_candidates, Compare);
+		Model[] choosen = new Model[AmountOfChoosen];
+		foreach (var candidate in _candidates)
+		{
+			Model tryInsert = candidate;
+			for (int i = 0; i < choosen.Length;i++)
+			{
+				if (choosen[i] == null)
+				{
+					choosen[i] = tryInsert;
+					break;
+				}
+
+				var comRes = Compare(tryInsert, choosen[i]);
+				if (comRes == ComparisonResult.A_IsGreater || comRes == ComparisonResult.AreEqual)
+				{
+					Model temp = choosen[i];
+					choosen[i] = tryInsert;
+					tryInsert = temp;
+				}
+			}
+		}
+
+		for (int i = 0; i < _candidates.Length; i++)
+		{
+			_candidates[i] = i < choosen.Length ? choosen[i] : null;
+		}
 	}
 
 
@@ -127,8 +164,41 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 	}
 
 
-	public abstract int Compare(Model a, Model b);
+	public abstract ComparisonResult Compare(Model a, Model b);
 	public abstract Model Mutate(Model model);
-	public abstract Model Cross(Model modelA, Model modelB);
-	public abstract void TestCandidate(Model model);
+
+
+	public virtual Model Cross(Model modelA, Model modelB) {
+		if (Rand.Next() % 2 == 0)
+		{
+			return Mutate(modelA);
+		}
+		return Mutate(modelB);
+	}
+
+
+	/// <summary>
+	/// By default this method will be called by TestCandidates() method to test each model separately.
+	/// You don't have to implement the method
+	/// </summary>
+	/// <param name="model">AI Model, Candidate</param>
+	public virtual void TestCandidate(Model model) {
+		// Do nothing
+	}
+
+
+	/// <summary>
+	/// This hook will be called after new generation is sorted.
+	/// But before GenerationCounter is updated!
+	/// </summary>
+	protected virtual void AfterGenocide()
+	{ }
+}
+
+
+public enum ComparisonResult
+{
+	A_IsGreater = -1,
+	B_IsGreater = 1,
+	AreEqual = 0
 }
