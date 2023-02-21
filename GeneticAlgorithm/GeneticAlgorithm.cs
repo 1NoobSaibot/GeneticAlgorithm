@@ -9,7 +9,7 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 
 
 	protected readonly Random Rand = new Random();
-	private Model[] _candidates;
+	private Model?[] _candidates;
 
 
 	public GeneticAlgorithm(int generationLength, int amountOfChoosen)
@@ -61,7 +61,7 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 		Model[] choosenCandidates = new Model[AmountOfChoosen];
 		for (int i = 0; i < choosenCandidates.Length; i++)
 		{
-			choosenCandidates[i] = _candidates[i];
+			choosenCandidates[i] = _candidates[i]!;
 		}
 		return choosenCandidates;
 	}
@@ -95,11 +95,11 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 	/// By default tests each candidate separately by calling TestCandidate(Model).
 	/// If you need to test models in different way you can override the method.
 	/// </summary>
-	protected virtual void TestCandidates(Model[] candidates)
+	protected virtual void TestCandidates(Model?[] candidates)
 	{
 		for (int i = 0; i < candidates.Length; i++)
 		{
-			TestCandidate(candidates[i]);
+			TestCandidate(candidates[i]!);
 		}
 	}
 
@@ -109,7 +109,7 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 		Model[] choosen = new Model[AmountOfChoosen];
 		foreach (var candidate in _candidates)
 		{
-			Model tryInsert = candidate;
+			Model tryInsert = candidate!;
 			for (int i = 0; i < choosen.Length;i++)
 			{
 				if (choosen[i] == null)
@@ -137,7 +137,7 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 
 	private Model ChooseRandomCandidate(int maxIndex)
 	{
-		Model c;
+		Model? c;
 		int loopCounter = 0;
 		do
 		{
@@ -156,7 +156,7 @@ public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where M
 		{
 			if (_candidates[i] != null)
 			{
-				return _candidates[i];
+				return _candidates[i]!;
 			}
 		}
 
