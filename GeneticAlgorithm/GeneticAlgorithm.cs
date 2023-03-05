@@ -1,9 +1,9 @@
-﻿using System;
-
-namespace Evolution
+﻿namespace Evolution
 {
-	public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model> where Model : class
+	public abstract class GeneticAlgorithm<Model> : IGeneticAlgorithm<Model>
+		where Model : class, IGeneticModel
 	{
+		private readonly IModelGenerator<Model> _generator;
 		public readonly int GenerationLength;
 		public readonly int AmountOfChoosen;
 		public int GenerationCounter { get; private set; }
@@ -14,7 +14,11 @@ namespace Evolution
 		private readonly Model?[] _candidates;
 
 
-		public GeneticAlgorithm(int generationLength, int amountOfChoosen)
+		public GeneticAlgorithm(
+			IModelGenerator<Model> generator,
+			int generationLength,
+			int amountOfChoosen
+		)
 		{
 			if (generationLength < 2)
 			{
@@ -25,14 +29,21 @@ namespace Evolution
 			{
 				throw new ArgumentOutOfRangeException(nameof(amountOfChoosen), $"should be less than {nameof(generationLength)}");
 			}
+
+			_generator = generator;
 			GenerationLength = generationLength;
 			AmountOfChoosen = amountOfChoosen;
 			_candidates = new Model[generationLength];
 		}
 
 
-		public GeneticAlgorithm(int generationLength, int amountOfChoosen, int generationCountInit)
-			: this(generationLength, amountOfChoosen)
+		public GeneticAlgorithm(
+			IModelGenerator<Model> generator,
+			int generationLength,
+			int amountOfChoosen,
+			int generationCountInit
+		)
+			: this(generator, generationLength, amountOfChoosen)
 		{
 			GenerationCounter = generationCountInit;
 		}
@@ -55,9 +66,13 @@ namespace Evolution
 
 		public void NextGeneration()
 		{
-			ReproduceAndMutate();
-			TestCandidates(_candidates);
-			MakeGenocide();
+			do
+			{
+				ReproduceAndMutate();
+				TestCandidates(_candidates);
+				MakeGenocide();
+			} while (_candidates[0] == null);
+
 			AfterGenocide();
 			GenerationCounter++;
 		}
@@ -97,7 +112,11 @@ namespace Evolution
 		{
 			if (_candidates[0] == null)
 			{
-				throw new Exception("Cannot reproduce when we have no models");
+				for (int i = 0; i < _candidates.Length; i++)
+				{
+					_candidates[i] = _generator.Generate();
+				}
+				return;
 			}
 
 			if (_candidates[1] == null)
@@ -142,29 +161,45 @@ namespace Evolution
 
 		private void MakeGenocide()
 		{
-			Model[] choosen = new Model[AmountOfChoosen];
-			foreach (var candidate in _candidates)
+			Model?[] choosen = new Model[AmountOfChoosen];
+			for (int j = 0; j < _candidates.Length; j++)
 			{
-				Model tryInsert = candidate!;
+				Model candidate = _candidates[j]!;
+				_candidates[j] = null;
+
+				if (candidate!.CanBeTested() == false)
+				{
+					continue;
+				}
+
 				for (int i = 0; i < choosen.Length; i++)
 				{
 					if (choosen[i] == null)
 					{
-						choosen[i] = tryInsert;
+						choosen[i] = candidate;
 						break;
 					}
 
-					var comRes = Compare(tryInsert, choosen[i]);
+					var comRes = Compare(candidate, choosen[i]!);
 					if (comRes == ComparisonResult.A_IsGreater || comRes == ComparisonResult.AreEqual)
 					{
-						(tryInsert, choosen[i]) = (choosen[i], tryInsert);
+						(candidate, choosen[i]) = (choosen[i]!, candidate);
 					}
 				}
 			}
 
-			for (int i = 0; i < _candidates.Length; i++)
+			if (choosen[0] == null)
 			{
-				_candidates[i] = i < choosen.Length ? choosen[i] : null;
+				return;
+			}
+
+			for (int i = 0; i < choosen.Length; i++)
+			{
+				if (choosen[i] == null)
+				{
+					break;
+				}
+				_candidates[i] = choosen[i];
 			}
 		}
 

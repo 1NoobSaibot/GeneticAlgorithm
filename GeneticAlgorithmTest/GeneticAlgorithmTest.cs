@@ -10,11 +10,8 @@ namespace GeneticAlgorithmTest
 		{
 			for (int i = 0; i < 100; i++)
 			{
-				SimpleGA gen = new SimpleGA();
-				gen.LoadCandidate(new SimpleModel(-777));
-				gen.LoadCandidate(new SimpleModel(-4));
+				SimpleGA gen = new();
 
-				gen.NextGeneration();
 				gen.NextGeneration();
 
 				var models = gen.GetChoosen();
@@ -32,9 +29,7 @@ namespace GeneticAlgorithmTest
 		[TestMethod]
 		public void ShouldProgress()
 		{
-			SimpleGA gen = new SimpleGA();
-			gen.LoadCandidate(new SimpleModel(-777));
-			gen.LoadCandidate(new SimpleModel(-4));
+			SimpleGA gen = new();
 
 			do
 			{
@@ -50,7 +45,7 @@ namespace GeneticAlgorithmTest
 	/// </summary>
 	internal class SimpleGA : GeneticAlgorithm<SimpleModel>
 	{
-		public SimpleGA():base(100, 10) { }
+		public SimpleGA():base(new SimpleModelGenerator(), 100, 10) { }
 
 		public override ComparisonResult Compare(SimpleModel a, SimpleModel b)
 		{
@@ -82,7 +77,7 @@ namespace GeneticAlgorithmTest
 	}
 
 
-	internal class SimpleModel
+	internal class SimpleModel : IGeneticModel
 	{
 		public readonly float Value;
 		public float Error;
@@ -92,10 +87,24 @@ namespace GeneticAlgorithmTest
 			Value = value;
 		}
 
+		public bool CanBeTested()
+		{
+			return true;
+		}
 
 		public override string ToString()
 		{
 			return Math.Abs(Value - 777).ToString();
+		}
+	}
+
+	internal class SimpleModelGenerator : IModelGenerator<SimpleModel>
+	{
+		private readonly Random rnd = new();
+
+		public SimpleModel Generate()
+		{
+			return new SimpleModel(rnd.NextSingle() * 100 - 700);
 		}
 	}
 }

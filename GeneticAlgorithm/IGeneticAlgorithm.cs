@@ -1,6 +1,6 @@
 ﻿namespace Evolution
 {
-	public interface IGeneticAlgorithm<Model>
+	public interface IGeneticAlgorithm<Model> where Model : IGeneticModel
 	{
 		// Before looping generations
 		void LoadCandidate(Model model);
