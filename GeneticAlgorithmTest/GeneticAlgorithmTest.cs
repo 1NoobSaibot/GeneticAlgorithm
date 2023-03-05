@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using Evolution;
 
 namespace GeneticAlgorithmTest
 {
@@ -7,7 +6,31 @@ namespace GeneticAlgorithmTest
 	public class GeneticAlgorithmTest
 	{
 		[TestMethod]
-		public void TestMethod1()
+		public void ShouldSortCorrectly()
+		{
+			for (int i = 0; i < 100; i++)
+			{
+				SimpleGA gen = new SimpleGA();
+				gen.LoadCandidate(new SimpleModel(-777));
+				gen.LoadCandidate(new SimpleModel(-4));
+
+				gen.NextGeneration();
+				gen.NextGeneration();
+
+				var models = gen.GetChoosen();
+				for (int j = 1; j < models.Length; j++)
+				{
+					var aDist = Math.Abs(models[j - 1].Value - 777);
+					var bDist = Math.Abs(models[j - 0].Value - 777);
+					Assert.IsTrue(aDist <= bDist);
+				}
+				
+			}
+		}
+
+
+		[TestMethod]
+		public void ShouldProgress()
 		{
 			SimpleGA gen = new SimpleGA();
 			gen.LoadCandidate(new SimpleModel(-777));
@@ -27,7 +50,7 @@ namespace GeneticAlgorithmTest
 	/// </summary>
 	internal class SimpleGA : GeneticAlgorithm<SimpleModel>
 	{
-		public SimpleGA():base(100, 2) { }
+		public SimpleGA():base(100, 10) { }
 
 		public override ComparisonResult Compare(SimpleModel a, SimpleModel b)
 		{
@@ -67,6 +90,12 @@ namespace GeneticAlgorithmTest
 		public SimpleModel(float value)
 		{
 			Value = value;
+		}
+
+
+		public override string ToString()
+		{
+			return Math.Abs(Value - 777).ToString();
 		}
 	}
 }
