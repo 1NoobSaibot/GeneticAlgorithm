@@ -1,7 +1,7 @@
 ﻿namespace Evolution
 {
 	// TODO: The interface seems to be useless: it contains all inner methods, but doesn't contain NextGeneration()
-	public interface IGeneticAlgorithm<Model> where Model : IGeneticModel
+	public interface IGeneticAlgorithmAsync<Model> where Model : IGeneticModel
 	{
 		// Before looping generations
 		void LoadCandidate(Model model);
@@ -27,7 +27,7 @@
 		/// Fitnes function.
 		/// </summary>
 		/// <param name="model"></param>
-		void TestCandidate(Model model);
+		Task TestCandidate(Model model);
 
 		ComparisonResult Compare(Model modelA, Model modelB);
 

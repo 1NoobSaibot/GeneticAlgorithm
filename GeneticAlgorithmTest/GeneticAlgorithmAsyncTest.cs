@@ -1,16 +1,16 @@
 ﻿namespace GeneticAlgorithmTest
 {
 	[TestClass]
-	public class GeneticAlgorithmTest
+	public class GeneticAlgorithmAsyncTest
 	{
 		[TestMethod]
-		public void ShouldSortCorrectly()
+		public async Task ShouldSortCorrectly()
 		{
 			for (int i = 0; i < 100; i++)
 			{
-				SimpleGA gen = new();
+				SimpleGAAsync gen = new();
 
-				gen.NextGeneration();
+				await gen.NextGeneration();
 
 				var models = gen.GetChoosen();
 				for (int j = 1; j < models.Length; j++)
@@ -25,13 +25,13 @@
 
 
 		[TestMethod]
-		public void ShouldProgress()
+		public async Task ShouldProgress()
 		{
-			SimpleGA gen = new();
+			SimpleGAAsync gen = new();
 
 			do
 			{
-				gen.NextGeneration();
+				await gen.NextGeneration();
 			} while (gen.GetChoosen()[0].Value != 777);
 		}
 	}
