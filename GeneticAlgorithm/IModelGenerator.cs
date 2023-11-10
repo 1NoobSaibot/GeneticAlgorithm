@@ -1,6 +1,6 @@
 ﻿namespace Evolution
 {
-	public interface IModelGenerator<Model> where Model : IGeneticModel
+	public interface IModelGenerator<Model>
 	{
 		Model Generate();
 	}
