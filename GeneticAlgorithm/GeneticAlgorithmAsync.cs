@@ -70,10 +70,10 @@
 			{
 				ReproduceAndMutate();
 				await TestCandidates(_candidates);
-				MakeGenocide();
+				ChooseTheBest();
 			} while (_candidates[0] == null);
 
-			await AfterGenocide();
+			await AfterSelection();
 			GenerationCounter++;
 		}
 
@@ -159,7 +159,7 @@
 		}
 
 
-		private void MakeGenocide()
+		private void ChooseTheBest()
 		{
 			Model?[] choosen = new Model[AmountOfChoosen];
 			for (int j = 0; j < _candidates.Length; j++)
@@ -262,7 +262,7 @@
 		/// This hook will be called after new generation is sorted.
 		/// But before GenerationCounter is updated!
 		/// </summary>
-		protected virtual Task AfterGenocide()
+		protected virtual Task AfterSelection()
 		{
 			return Task.CompletedTask;
 		}
