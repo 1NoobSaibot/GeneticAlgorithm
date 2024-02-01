@@ -108,6 +108,19 @@
 		}
 
 
+		/// <summary>
+		/// This method remove all models to generate new generation from zero.
+		/// <see cref="GenerationCounter"/> will not be reset
+		/// </summary>
+		public void ResetModels()
+		{
+			for (int i = 0; i < _candidates.Length; i++)
+			{
+				_candidates[i] = null;
+			}
+		}
+
+
 		private void ReproduceAndMutate()
 		{
 			if (_candidates[0] == null)
