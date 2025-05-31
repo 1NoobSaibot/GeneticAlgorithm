@@ -27,7 +27,10 @@
 
 			if (amountOfChoosen >= generationLength)
 			{
-				throw new ArgumentOutOfRangeException(nameof(amountOfChoosen), $"should be less than {nameof(generationLength)}");
+				throw new ArgumentOutOfRangeException(
+					paramName: nameof(amountOfChoosen),
+					message: $"should be less than {nameof(generationLength)}"
+				);
 			}
 
 			_generator = generator;
@@ -80,15 +83,16 @@
 
 		public Model[] GetChoosen()
 		{
-			List<Model> choosenCandidates = new();
+			List<Model> choosenCandidates = new(_candidates.Length);
 			for (int i = 0; i < AmountOfChoosen; i++)
 			{
-				if (_candidates[i] != null)
+				if (_candidates[i] is not null)
 				{
 					choosenCandidates.Add(_candidates[i]!);
 				}
 			}
-			return choosenCandidates.ToArray();
+
+			return [.. choosenCandidates];
 		}
 
 

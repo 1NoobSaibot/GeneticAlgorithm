@@ -80,7 +80,7 @@
 
 		public Model[] GetChoosen()
 		{
-			List<Model> choosenCandidates = new();
+			List<Model> choosenCandidates = new(AmountOfChoosen);
 			for (int i = 0; i < AmountOfChoosen; i++)
 			{
 				if (_candidates[i] != null)
@@ -88,7 +88,7 @@
 					choosenCandidates.Add(_candidates[i]!);
 				}
 			}
-			return choosenCandidates.ToArray();
+			return [.. choosenCandidates];
 		}
 
 
