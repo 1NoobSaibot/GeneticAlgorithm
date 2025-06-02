@@ -1,4 +1,4 @@
-﻿namespace Evolution
+﻿namespace GeneticAlgorithm
 {
 	public abstract class GeneticAlgorithmAsync<Model> : IGeneticAlgorithmAsync<Model>
 		where Model : class, IGeneticModel

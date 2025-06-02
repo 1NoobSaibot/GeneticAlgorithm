@@ -1,4 +1,4 @@
-﻿namespace Evolution
+﻿namespace GeneticAlgorithm
 {
 	// TODO: The interface seems to be useless: it contains all inner methods, but doesn't contain NextGeneration()
 	public interface IGeneticAlgorithm<Model> where Model : IGeneticModel

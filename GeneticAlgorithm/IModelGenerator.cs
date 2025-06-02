@@ -1,4 +1,4 @@
-﻿namespace Evolution
+﻿namespace GeneticAlgorithm
 {
 	public interface IModelGenerator<Model>
 	{

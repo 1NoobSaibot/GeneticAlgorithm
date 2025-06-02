@@ -1,4 +1,4 @@
-﻿using Evolution;
+﻿using GeneticAlgorithm;
 
 namespace GeneticAlgorithmTest
 {
