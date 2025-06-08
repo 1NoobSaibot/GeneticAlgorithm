@@ -27,7 +27,10 @@
 
 			if (amountOfChoosen >= generationLength)
 			{
-				throw new ArgumentOutOfRangeException(nameof(amountOfChoosen), $"should be less than {nameof(generationLength)}");
+				throw new ArgumentOutOfRangeException(
+					paramName: nameof(amountOfChoosen),
+					message: $"should be less than {nameof(generationLength)}"
+				);
 			}
 
 			_generator = generator;
@@ -64,30 +67,31 @@
 		}
 
 
-		public void NextGeneration()
+		public async Task NextGeneration()
 		{
 			do
 			{
 				ReproduceAndMutate();
-				TestCandidates(_candidates);
+				await TestCandidates(_candidates);
 				ChooseTheBest();
 			} while (_candidates[0] == null);
 
-			AfterSelection();
+			await AfterSelection();
 			GenerationCounter++;
 		}
 
 
 		public Model[] GetChoosen()
 		{
-			List<Model> choosenCandidates = new(AmountOfChoosen);
+			List<Model> choosenCandidates = new(_candidates.Length);
 			for (int i = 0; i < AmountOfChoosen; i++)
 			{
-				if (_candidates[i] != null)
+				if (_candidates[i] is not null)
 				{
 					choosenCandidates.Add(_candidates[i]!);
 				}
 			}
+
 			return [.. choosenCandidates];
 		}
 
@@ -163,11 +167,11 @@
 		/// By default tests each candidate separately by calling TestCandidate(Model).
 		/// If you need to test models in different way you can override the method.
 		/// </summary>
-		protected virtual void TestCandidates(Model?[] candidates)
+		protected virtual async Task TestCandidates(Model?[] candidates)
 		{
 			for (int i = 0; i < candidates.Length; i++)
 			{
-				TestCandidate(candidates[i]!);
+				await TestCandidate(candidates[i]!);
 			}
 		}
 
@@ -246,11 +250,11 @@
 		}
 
 
-		public abstract ComparisonResult Compare(Model a, Model b);
-		public abstract Model Mutate(Model model);
+		protected abstract ComparisonResult Compare(Model a, Model b);
+		protected abstract Model Mutate(Model model);
 
 
-		public virtual Model Cross(Model modelA, Model modelB)
+		protected virtual Model Cross(Model modelA, Model modelB)
 		{
 			if (Rand.Next() % 2 == 0)
 			{
@@ -265,9 +269,9 @@
 		/// You don't have to implement the method
 		/// </summary>
 		/// <param name="model">AI Model, Candidate</param>
-		public virtual void TestCandidate(Model model)
+		protected virtual Task TestCandidate(Model model)
 		{
-			// Do nothing
+			return Task.CompletedTask;
 		}
 
 
@@ -275,15 +279,9 @@
 		/// This hook will be called after new generation is sorted.
 		/// But before GenerationCounter is updated!
 		/// </summary>
-		protected virtual void AfterSelection()
-		{ }
-	}
-
-
-	public enum ComparisonResult
-	{
-		A_IsGreater = -1,
-		B_IsGreater = 1,
-		AreEqual = 0
+		protected virtual Task AfterSelection()
+		{
+			return Task.CompletedTask;
+		}
 	}
 }

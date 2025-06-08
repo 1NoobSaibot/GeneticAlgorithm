@@ -10,7 +10,7 @@ namespace GeneticAlgorithmTest
 	{
 		public SimpleGA() : base(new SimpleModelGenerator(), 100, 10) { }
 
-		public override ComparisonResult Compare(SimpleModel a, SimpleModel b)
+		protected override ComparisonResult Compare(SimpleModel a, SimpleModel b)
 		{
 			if (a.Error < b.Error)
 			{
@@ -23,19 +23,20 @@ namespace GeneticAlgorithmTest
 			return ComparisonResult.AreEqual;
 		}
 
-		public override SimpleModel Cross(SimpleModel modelA, SimpleModel modelB)
+		protected override SimpleModel Cross(SimpleModel modelA, SimpleModel modelB)
 		{
 			return new SimpleModel((modelA.Value + modelB.Value) / 2f);
 		}
 
-		public override SimpleModel Mutate(SimpleModel model)
+		protected override SimpleModel Mutate(SimpleModel model)
 		{
 			return new SimpleModel(model.Value + (float)(Rand.NextDouble() * 20 - 10));
 		}
 
-		public override void TestCandidate(SimpleModel model)
+		protected override Task TestCandidate(SimpleModel model)
 		{
 			model.Error = Math.Abs(777 - model.Value);
+			return Task.CompletedTask;
 		}
 	}
 }
