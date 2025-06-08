@@ -1,12 +1,12 @@
 ﻿namespace GeneticAlgorithm
 {
-	public interface IGeneticAlgorithmAsync
+	public interface IGeneticAlgorithm
 	{
 		Task NextGeneration();
 	}
 
 
-	public interface IGeneticAlgorithm<Model> : IGeneticAlgorithmAsync
+	public interface IGeneticAlgorithm<Model> : IGeneticAlgorithm
 		where Model : IGeneticModel
 	{
 		void LoadCandidate(Model model);

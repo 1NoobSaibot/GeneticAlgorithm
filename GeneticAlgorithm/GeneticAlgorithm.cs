@@ -127,20 +127,25 @@
 
 		private void ReproduceAndMutate()
 		{
+			// If no models - all must be generated from scratch
 			if (_candidates[0] == null)
 			{
 				for (int i = 0; i < _candidates.Length; i++)
 				{
 					_candidates[i] = _generator.Generate();
+					OnModelCreated(_candidates[i]!);
 				}
 				return;
 			}
 
+			// If we have only one model - cannot cross, 100% mutation
 			if (_candidates[1] == null)
 			{
 				_candidates[1] = Mutate(_candidates[0]!);
+				OnModelCreated(_candidates[1]!);
 			}
 
+			// Regular reproducing
 			for (int i = 2; i < _candidates.Length; i++)
 			{
 				if (i < AmountOfChoosen && _candidates[i] != null)
@@ -156,9 +161,9 @@
 				else
 				{
 					Model candidateB = ChooseRandomCandidate(i);
-
 					_candidates[i] = Cross(candidateA, candidateB);
 				}
+				OnModelCreated(_candidates[i]!);
 			}
 		}
 
@@ -261,6 +266,12 @@
 				return Mutate(modelA);
 			}
 			return Mutate(modelB);
+		}
+
+
+		protected virtual void OnModelCreated(Model newModel)
+		{
+			// Do nothing
 		}
 
 
